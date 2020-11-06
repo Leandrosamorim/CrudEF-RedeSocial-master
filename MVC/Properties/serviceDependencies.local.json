@@ -1,0 +1,28 @@
+{
+  "dependencies": {
+    "secrets1": {
+      "type": "secrets.user"
+    },
+    "storage1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Storage/storageAccounts/webapplication14storage",
+      "type": "storage.azure",
+      "connectionId": "StorageAccount",
+      "secretStore": "LocalSecretsFile"
+    },
+    "mssql1": {
+      "type": "mssql.local",
+      "connectionId": "IdentityDbContextConnection",
+      "secretStore": "LocalSecretsFile"
+    },
+    "mssql2": {
+      "type": "mssql.local",
+      "connectionId": "WebApplication14Context",
+      "secretStore": "LocalSecretsFile"
+    },
+    "mssql3": {
+      "type": "mssql.local",
+      "connectionId": "PostContext",
+      "secretStore": "LocalSecretsFile"
+    }
+  }
+}

@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20200503021949_NewMigration.cs" />
+    <Compile Remove="Migrations\20200503021949_NewMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200607081238_NewMigration.cs" />
+    <Compile Remove="Migrations\20200607081238_NewMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200607172745_NewMigration.cs" />
+    <Compile Remove="Migrations\20200607172745_NewMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200607173737_NewMIgration.cs" />
+    <Compile Remove="Migrations\20200607173737_NewMIgration.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Storage.Queues" Version="12.3.2" />
+    <PackageReference Include="Microsoft.Azure.Storage.Blob" Version="11.1.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.Models.csproj" />
+  </ItemGroup>
+
+</Project>
