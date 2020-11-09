@@ -78,11 +78,17 @@ namespace WebApplication14.HttpServices
             return null;
         }
 
-        public async Task InsertAsync(Professor insertedEntity)
+        public async Task InsertAsync(Professor insertedEntity, string base64)
         {
+            var createModel = new CreateAndUpdateHttpProfessor
+            {
+                Professor = insertedEntity,
+                ImageBase64 = base64
+            };
+
             var uriPath = $"{_professorHttpOptions.CurrentValue.ProfessorPath}";
 
-            var httpContent = new StringContent(JsonConvert.SerializeObject(insertedEntity), Encoding.UTF8, "application/json");
+            var httpContent = new StringContent(JsonConvert.SerializeObject(createModel), Encoding.UTF8, "application/json");
 
             var httpResponseMessage = await _httpClient.PostAsync(uriPath, httpContent);
 

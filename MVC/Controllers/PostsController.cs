@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Http;
 using Domain.Models.Exceptions;
 using WebApplication14.Areas.Identity;
 using WebApplication14.HttpServices;
+using System.Transactions;
+using System.IO;
 
 namespace WebApplication14.Controllers
 {
@@ -66,13 +68,16 @@ namespace WebApplication14.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Post post)
+        public async Task<IActionResult> Create(Post post, IFormFile ImageFile)
         {
-            var userMail = User.Identity.Name;
-            post.OwnerEmail = userMail;
+            using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
             try
             {
-                await _postServices.InsertAsync(post);
+                post.OwnerEmail = User.Identity.Name;
+                await _postServices.InsertAsync(post, ConvertIFormFileToBase64(ImageFile));
+
+                scope.Complete();
+
                 return RedirectToAction(nameof(Index));
             }
             catch (EntityValidationException e)
@@ -115,9 +120,9 @@ namespace WebApplication14.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Post post)
+        public async Task<IActionResult> Edit(Post post, IFormFile ImageFile)
         {
-            if (id != post.Id)
+            if (post.Id <= 0)
             {
                 return NotFound();
             }
@@ -131,11 +136,10 @@ namespace WebApplication14.Controllers
             {
                 try
                 {
-                    var updatedPost = await _postServices.GetByIdAsync(id);
-                    post.OwnerEmail = updatedPost.OwnerEmail;
-                    var file = Request.Form.Files.SingleOrDefault();
 
-                    await _postServices.UpdateAsync(post);
+                    await _postServices.UpdateAsync(post, ConvertIFormFileToBase64(ImageFile));
+
+                    return RedirectToAction("Index", "Home");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -186,5 +190,22 @@ namespace WebApplication14.Controllers
                 await _postServices.DeleteAsync(profEntity);
                 return RedirectToAction(nameof(Index));
             }
+
+        public string ConvertIFormFileToBase64(IFormFile image)
+        {
+            if (image != null)
+            {
+                string imageBase64;
+                using (var ms = new MemoryStream())
+                {
+                    image.CopyTo(ms);
+                    var fileBytes = ms.ToArray();
+                    imageBase64 = Convert.ToBase64String(fileBytes);
+                }
+
+                return imageBase64;
+            }
+            return null;
         }
+    }
 }

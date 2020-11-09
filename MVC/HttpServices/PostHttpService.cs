@@ -78,11 +78,17 @@ namespace WebApplication14.HttpServices
             return null;
         }
 
-        public async Task InsertAsync(Post insertedEntity)
+        public async Task InsertAsync(Post insertedEntity, string base64)
         {
+            var createModel = new CreateAndUpdateHttpPost
+            {
+                Post = insertedEntity,
+                Uri = base64
+            };
+
             var uriPath = $"{_professorHttpOptions.CurrentValue.PostPath}";
 
-            var httpContent = new StringContent(JsonConvert.SerializeObject(insertedEntity), Encoding.UTF8, "application/json");
+            var httpContent = new StringContent(JsonConvert.SerializeObject(createModel), Encoding.UTF8, "application/json");
 
             var httpResponseMessage = await _httpClient.PostAsync(uriPath, httpContent);
 
@@ -92,17 +98,23 @@ namespace WebApplication14.HttpServices
             }
         }
 
-        public async Task UpdateAsync(Post updatedEntity)
+        public async Task UpdateAsync(Post updatedEntity, string base64)
         {
+            var createModel = new CreateAndUpdateHttpPost
+            {
+                Post = updatedEntity,
+                Uri = base64
+            };
+
             var pathWithId = $"{_professorHttpOptions.CurrentValue.PostPath}/{updatedEntity.Id}";
 
-            var httpContent = new StringContent(JsonConvert.SerializeObject(updatedEntity), Encoding.UTF8, "application/json");
+            var httpContent = new StringContent(JsonConvert.SerializeObject(createModel), Encoding.UTF8, "application/json");
 
             var httpResponseMessage = await _httpClient.PutAsync(pathWithId, httpContent);
 
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
-                await _signInManager.SignOutAsync();
+                //await _signInManager.SignOutAsync();
             }
         }
 

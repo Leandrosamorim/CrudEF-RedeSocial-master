@@ -23,4 +23,10 @@ namespace Domain.Models.Models
         [DisplayName("Foto")]
         public string ImageUri { get; set; }
     }
+
+    public class CreateAndUpdateHttpProfessor
+    {
+        public Professor Professor { get; set; }
+        public string ImageBase64 { get; set; }
+    }
 }

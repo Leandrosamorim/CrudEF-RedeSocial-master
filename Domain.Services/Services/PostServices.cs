@@ -41,9 +41,9 @@ namespace Domain.Services.Services
                 return await _postRepository.GetByIdAsync(id);
             }
 
-            public async Task InsertAsync(Post insertedEntity)
+            public async Task InsertAsync(Post insertedEntity, string stream)
             {
-                var newUri = await _blobService.UploadAsync(insertedEntity.BlobUri);
+                var newUri = await _blobService.UploadAsync(stream);
                 insertedEntity.BlobUri = newUri;
 
                 var message = new
@@ -59,16 +59,22 @@ namespace Domain.Services.Services
                 await _postRepository.InsertAsync(insertedEntity);
             }
 
-            public async Task UpdateAsync(Post updatedEntity)
+            public async Task UpdateAsync(Post updatedEntity, string stream)
+            {
+            if (stream != null)
             {
                 if (updatedEntity.BlobUri != null)
                 {
                     await _blobService.DeleteAsync(updatedEntity.BlobUri);
-
-                    var newUri = await _blobService.UploadAsync(updatedEntity.BlobUri);
-                    updatedEntity.BlobUri = newUri;
                 }
-                await _postRepository.UpdateAsync(updatedEntity);
+
+                var blob = await _blobService.UploadAsync(stream);
+
+                updatedEntity.BlobUri = blob;
             }
+
+            await _postRepository.UpdateAsync(updatedEntity);
+        }
+
         }
 }

@@ -19,12 +19,9 @@ namespace Domain.Services.Services
                 _blobServiceClient = new BlobServiceClient(storageAccount);
             }
 
-            public async Task<string> UploadAsync(string Uri)
+            public async Task<string> UploadAsync(string imageBase64)
             {
-            using var webClient = new WebClient();
-            var imageBytes = webClient.DownloadData(Uri);
-
-            var stream = new MemoryStream(imageBytes);
+                var stream = new MemoryStream(Convert.FromBase64String(imageBase64));
 
                 var containerClient = _blobServiceClient.GetBlobContainerClient(_container);
 

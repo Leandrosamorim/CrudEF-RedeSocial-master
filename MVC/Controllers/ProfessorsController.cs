@@ -20,6 +20,7 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using WebApplication14.Models;
 using WebApplication14.HttpServices;
+using System.Transactions;
 
 namespace WebApplication14.Controllers
 {
@@ -74,9 +75,13 @@ namespace WebApplication14.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Professor professor, IFormFile ImageFile)
         {
+            using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
                 try 
                 { 
-                await _professorServices.InsertAsync(professor);
+                await _professorServices.InsertAsync(professor, ConvertIFormFileToBase64(ImageFile));
+
+                scope.Complete();
+
                 return RedirectToAction(nameof(Index));
                 }
                 catch (EntityValidationException e)
@@ -189,6 +194,23 @@ namespace WebApplication14.Controllers
             var profEntity = await _professorServices.GetByIdAsync(professor.Id);
             await _professorServices.DeleteAsync(profEntity);
             return RedirectToAction(nameof(Index));
+        }
+
+        public string ConvertIFormFileToBase64(IFormFile image)
+        {
+            if (image != null)
+            {
+                string imageBase64;
+                using (var ms = new MemoryStream())
+                {
+                    image.CopyTo(ms);
+                    var fileBytes = ms.ToArray();
+                    imageBase64 = Convert.ToBase64String(fileBytes);
+                }
+
+                return imageBase64;
+            }
+            return null;
         }
     }
 }

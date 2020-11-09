@@ -52,23 +52,21 @@ namespace Web_API.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPost(int id, Post post)
+        public async Task<IActionResult> PutPost(CreateAndUpdateHttpPost post)
         {
-            if (id != post.Id)
-            {
-                return BadRequest();
-            }
-
             _context.Entry(post).State = EntityState.Modified;
+
+            var postModel = post.Post;
+            var uri = post.Uri;
 
             try
             {
-                await _postServices.UpdateAsync(post);
+                await _postServices.UpdateAsync(postModel, uri);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (_postServices.GetByIdAsync(id) != null)
+                if (_postServices.GetByIdAsync(post.Post.Id) != null)
                 {
                     return NotFound();
                 }
@@ -78,19 +76,22 @@ namespace Web_API.Controllers
                 }
             }
 
-            return NoContent();
+            return CreatedAtAction("GetPost", new { id = post.Post.Id }, post);
         }
 
         // POST: api/Posts
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Post>> PostPost(Post post)
+        public async Task<ActionResult<Post>> PostPost(CreateAndUpdateHttpPost post)
         {
-            await _postServices.InsertAsync(post);
+            var postModel = post.Post;
+            var uri = post.Uri;
+
+            await _postServices.InsertAsync(postModel, uri);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPost", new { id = post.Id }, post);
+            return CreatedAtAction("GetPost", new { id = post.Post.Id }, post);
         }
 
         // DELETE: api/Posts/5

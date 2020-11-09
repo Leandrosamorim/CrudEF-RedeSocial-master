@@ -11,7 +11,7 @@ namespace Domain.Models.Interfaces.Services
     {
         Task<IEnumerable<Professor>> GetAllAsync();
         Task<Professor> GetByIdAsync(int id);
-        Task InsertAsync(Professor updatedEntity);
+        Task InsertAsync(Professor updatedEntity, string stream);
         Task UpdateAsync(Professor insertedEntity);
         Task DeleteAsync(Professor deletedEntity);
     }

@@ -40,9 +40,9 @@ namespace Domain.Services.Services
             return await _professorRepository.GetByIdAsync(id);
         }
 
-        public async Task InsertAsync(Professor insertedEntity)
+        public async Task InsertAsync(Professor insertedEntity, string stream)
         {
-           var newUri = await _blobService.UploadAsync(insertedEntity.ImageUri);
+           var newUri = await _blobService.UploadAsync(stream);
             insertedEntity.ImageUri = newUri;
 
 

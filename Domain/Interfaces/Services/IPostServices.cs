@@ -9,8 +9,8 @@ namespace Domain.Services.Services
     {
         Task<IEnumerable<Post>> GetAllAsync();
         Task<Post> GetByIdAsync(int id);
-        Task InsertAsync(Post updatedEntity);
-        Task UpdateAsync(Post insertedEntity);
+        Task InsertAsync(Post updatedEntity, string base64);
+        Task UpdateAsync(Post insertedEntity, string base64);
         Task DeleteAsync(Post deletedEntity);
     }
 }

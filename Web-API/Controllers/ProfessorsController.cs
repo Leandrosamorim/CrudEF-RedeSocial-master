@@ -51,7 +51,7 @@ namespace Web_API.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProfessor(int id, Professor professor)
+        public async Task<IActionResult> PutProfessor(int id, [Bind("Professor, ImageBase64")] Professor professor)
         {
             if (id != professor.Id)
             {
@@ -83,12 +83,28 @@ namespace Web_API.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Professor>> PostProfessor(Professor professor)
+        public async Task<ActionResult<Professor>> PostProfessor(CreateAndUpdateHttpProfessor professor)
         {
-            await _professorServices.InsertAsync(professor);
-            await _context.SaveChangesAsync();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return CreatedAtAction("GetProfessor", new { id = professor.Id }, professor);
+            var professorModel = professor.Professor;
+            var imageBase64 = professor.ImageBase64;
+
+            try
+            {
+                await _professorServices.InsertAsync(professorModel, imageBase64);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return BadRequest(ModelState);
+            }
+
+            return CreatedAtAction("GetProfessor", new { id = professorModel.Id }, professorModel);
+                  
         }
 
         // DELETE: api/Professors/5

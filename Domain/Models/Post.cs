@@ -11,4 +11,10 @@ namespace Domain.Models.Models
         public string OwnerEmail { get; set; }
         public string BlobUri { get; set; }
     }
+
+    public class CreateAndUpdateHttpPost
+    {
+        public Post Post { get; set; }
+        public string Uri { get; set; }
+    }
 }
