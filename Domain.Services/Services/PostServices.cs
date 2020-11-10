@@ -59,16 +59,16 @@ namespace Domain.Services.Services
                 await _postRepository.InsertAsync(insertedEntity);
             }
 
-            public async Task UpdateAsync(Post updatedEntity, string stream)
-            {
-            if (stream != null)
+        public async Task UpdateAsync(Post updatedEntity, string base64)
+        {
+            if (base64 != null)
             {
                 if (updatedEntity.BlobUri != null)
                 {
                     await _blobService.DeleteAsync(updatedEntity.BlobUri);
                 }
 
-                var blob = await _blobService.UploadAsync(stream);
+                var blob = await _blobService.UploadAsync(base64);
 
                 updatedEntity.BlobUri = blob;
             }
@@ -76,5 +76,5 @@ namespace Domain.Services.Services
             await _postRepository.UpdateAsync(updatedEntity);
         }
 
-        }
+    }
 }

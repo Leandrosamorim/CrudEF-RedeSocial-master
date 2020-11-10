@@ -60,15 +60,20 @@ namespace Domain.Services.Services
             await _queueService.SendAsync(jsonMessageBase64);
         }
 
-        public async Task UpdateAsync(Professor updatedEntity)
+        public async Task UpdateAsync(Professor updatedEntity, string base64)
         {
-            if(updatedEntity.ImageUri != null)
+            if (base64 != null)
             {
-                await _blobService.DeleteAsync(updatedEntity.ImageUri);
+                if (updatedEntity.ImageUri != null)
+                {
+                    await _blobService.DeleteAsync(updatedEntity.ImageUri);
+                }
 
-                var newUri = await _blobService.UploadAsync(updatedEntity.ImageUri);
-                updatedEntity.ImageUri = newUri;
+                var blob = await _blobService.UploadAsync(base64);
+
+                updatedEntity.ImageUri = blob;
             }
+
             await _professorRepository.UpdateAsync(updatedEntity);
         }
     }

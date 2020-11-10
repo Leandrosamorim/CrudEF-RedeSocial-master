@@ -98,11 +98,17 @@ namespace WebApplication14.HttpServices
             }
         }
 
-        public async Task UpdateAsync(Professor updatedEntity)
+        public async Task UpdateAsync(Professor updatedEntity, string base64)
         {
+
+            var createModel = new CreateAndUpdateHttpProfessor
+            {
+                Professor = updatedEntity,
+                ImageBase64 = base64
+            };
             var pathWithId = $"{_professorHttpOptions.CurrentValue.ProfessorPath}/{updatedEntity.Id}";
 
-            var httpContent = new StringContent(JsonConvert.SerializeObject(updatedEntity), Encoding.UTF8, "application/json");
+            var httpContent = new StringContent(JsonConvert.SerializeObject(createModel), Encoding.UTF8, "application/json");
 
             var httpResponseMessage = await _httpClient.PutAsync(pathWithId, httpContent);
 

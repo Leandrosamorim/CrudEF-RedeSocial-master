@@ -51,8 +51,11 @@ namespace Web_API.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProfessor(int id, [Bind("Professor, ImageBase64")] Professor professor)
+        public async Task<IActionResult> PutProfessor(int id, CreateAndUpdateHttpProfessor professormodel)
         {
+            var professor = professormodel.Professor;
+            var imageBase64 = professormodel.ImageBase64;
+
             if (id != professor.Id)
             {
                 return BadRequest();
@@ -62,6 +65,7 @@ namespace Web_API.Controllers
 
             try
             {
+                await _professorServices.UpdateAsync(professor, imageBase64);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)

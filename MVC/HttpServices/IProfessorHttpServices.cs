@@ -9,7 +9,7 @@ namespace WebApplication14.HttpServices
         public Task<IEnumerable<Professor>> GetAllAsync();
         public Task<Professor> GetByIdAsync(int id);
         public Task InsertAsync(Professor insertedEntity, string base64);
-        public Task UpdateAsync(Professor updatedEntity);
+        public Task UpdateAsync(Professor updatedEntity, string base64);
         public Task DeleteAsync(Professor post);
     }
 }

@@ -120,9 +120,9 @@ namespace WebApplication14.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Post post, IFormFile ImageFile)
+        public async Task<IActionResult> Edit(int id, Post post, IFormFile ImageFile)
         {
-            if (post.Id <= 0)
+            if (id != post.Id)
             {
                 return NotFound();
             }
@@ -136,10 +136,9 @@ namespace WebApplication14.Controllers
             {
                 try
                 {
+                    var file = Request.Form.Files.SingleOrDefault();
 
                     await _postServices.UpdateAsync(post, ConvertIFormFileToBase64(ImageFile));
-
-                    return RedirectToAction("Index", "Home");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -156,7 +155,8 @@ namespace WebApplication14.Controllers
             }
             return View(post);
         }
-        public async Task<IActionResult> Delete(int? id)
+
+            public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {

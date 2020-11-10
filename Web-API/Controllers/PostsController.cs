@@ -52,21 +52,26 @@ namespace Web_API.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPost(CreateAndUpdateHttpPost post)
+        public async Task<IActionResult> PutPost(int id, CreateAndUpdateHttpPost postModel)
         {
-            _context.Entry(post).State = EntityState.Modified;
+            var post = postModel.Post;
+            var imageBase64 = postModel.Uri;
 
-            var postModel = post.Post;
-            var uri = post.Uri;
+            if (id != post.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(post).State = EntityState.Modified;
 
             try
             {
-                await _postServices.UpdateAsync(postModel, uri);
+                await _postServices.UpdateAsync(post, imageBase64);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (_postServices.GetByIdAsync(post.Post.Id) != null)
+                if (!PostExists(id))
                 {
                     return NotFound();
                 }
@@ -76,7 +81,7 @@ namespace Web_API.Controllers
                 }
             }
 
-            return CreatedAtAction("GetPost", new { id = post.Post.Id }, post);
+            return NoContent();
         }
 
         // POST: api/Posts
@@ -108,6 +113,11 @@ namespace Web_API.Controllers
             await _context.SaveChangesAsync();
 
             return post;
+        }
+
+        private bool PostExists(int id)
+        {
+            return _context.Post.Any(e => e.Id == id);
         }
     }
 }

@@ -105,7 +105,6 @@ namespace WebApplication14.HttpServices
                 Post = updatedEntity,
                 Uri = base64
             };
-
             var pathWithId = $"{_professorHttpOptions.CurrentValue.PostPath}/{updatedEntity.Id}";
 
             var httpContent = new StringContent(JsonConvert.SerializeObject(createModel), Encoding.UTF8, "application/json");
@@ -114,7 +113,7 @@ namespace WebApplication14.HttpServices
 
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
-                //await _signInManager.SignOutAsync();
+                await _signInManager.SignOutAsync();
             }
         }
 

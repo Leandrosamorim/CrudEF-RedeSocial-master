@@ -124,7 +124,7 @@ namespace WebApplication14.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Professor professor)
+        public async Task<IActionResult> Edit(int id, Professor professor, IFormFile ImageFile)
         {
             if (id != professor.Id)
             {
@@ -142,7 +142,7 @@ namespace WebApplication14.Controllers
                 {
                     var file = Request.Form.Files.SingleOrDefault();
 
-                    await _professorServices.UpdateAsync(professor);
+                    await _professorServices.UpdateAsync(professor, ConvertIFormFileToBase64(ImageFile));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
