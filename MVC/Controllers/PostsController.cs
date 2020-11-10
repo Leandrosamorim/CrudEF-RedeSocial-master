@@ -183,13 +183,21 @@ namespace WebApplication14.Controllers
 
         // POST: Posts/Delete/5
         [HttpPost, ActionName("Delete")]
-            [ValidateAntiForgeryToken]
-            public async Task<IActionResult> DeleteConfirmed(Post post)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            try
             {
-                var profEntity = await _postServices.GetByIdAsync(post.Id);
-                await _postServices.DeleteAsync(profEntity);
-                return RedirectToAction(nameof(Index));
+                var post = await _postServices.GetByIdAsync(id);
+                await _postServices.DeleteAsync(post);
+                return RedirectToAction("Index", "Posts");
             }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+           
+        }
 
         public string ConvertIFormFileToBase64(IFormFile image)
         {

@@ -125,7 +125,6 @@ namespace WebApplication14.HttpServices
 
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
-                await _signInManager.SignOutAsync();
             }
         }
     }

@@ -103,16 +103,21 @@ namespace Web_API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Post>> DeletePost(int id)
         {
-            var post = await _postServices.GetByIdAsync(id);
-            if (post == null)
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var postModel = await _postServices.GetByIdAsync(id);
+
+            if (postModel == null)
             {
                 return NotFound();
             }
 
-            await _postServices.DeleteAsync(post);
-            await _context.SaveChangesAsync();
+            await _postServices.DeleteAsync(postModel);
 
-            return post;
+            var posts = await _postServices.GetAllAsync();
+            return Ok(posts);
         }
 
         private bool PostExists(int id)

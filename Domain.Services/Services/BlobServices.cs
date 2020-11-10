@@ -40,13 +40,17 @@ namespace Domain.Services.Services
 
             public async Task DeleteAsync(string BlobName)
             {
-                var containerClient = _blobServiceClient.GetBlobContainerClient(_container);
+                if(BlobName != null)
+                {
+                    var containerClient = _blobServiceClient.GetBlobContainerClient(_container);
 
-                var blob = new BlobClient(new Uri(BlobName));
+                    var blob = new BlobClient(new Uri(BlobName));
 
-                var blobClient = containerClient.GetBlobClient(blob.Name);
+                    var blobClient = containerClient.GetBlobClient(blob.Name);
 
-                await blobClient.DeleteIfExistsAsync();
+                    await blobClient.DeleteIfExistsAsync();
+                }
+
             }
 
 
